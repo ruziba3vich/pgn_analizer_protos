@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package pgn_analyzer;
+
+option go_package = "pgn_analyzer";
+
+// Chess Analysis Service
+service ChessAnalysisService {
+  // Analyze a PGN and return Elo estimates by phase
+  rpc AnalyzePGN(AnalyzePGNRequest) returns (AnalyzePGNResponse);
+  
+  // Get detailed analysis with statistics (for debugging/monitoring)
+  rpc AnalyzePGNDetailed(AnalyzePGNRequest) returns (DetailedAnalysisResponse);
+  
+  // Health check
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// Request message for PGN analysis
+message AnalyzePGNRequest {
+  string pgn = 1;
+  int32 depth = 2;
+}
+
+// Simple response with Elo estimates
+message AnalyzePGNResponse {
+  PlayerEloAnalysis white = 1;
+  PlayerEloAnalysis black = 2;
+}
+
+// Player Elo analysis by phase
+message PlayerEloAnalysis {
+  int32 opening = 1;
+  int32 middlegame = 2;
+  int32 endgame = 3;
+}
+
+// Detailed analysis response (for debugging)
+message DetailedAnalysisResponse {
+  PlayerEloAnalysis white = 1;
+  PlayerEloAnalysis black = 2;
+  PhaseStatsByPhase white_stats = 3;
+  PhaseStatsByPhase black_stats = 4;
+  int32 total_moves = 5;
+  int32 analysis_depth = 6;
+}
+
+// Phase statistics grouped by game phase
+message PhaseStatsByPhase {
+  PhaseStats opening = 1;
+  PhaseStats middlegame = 2;
+  PhaseStats endgame = 3;
+}
+
+// Statistics for a specific phase
+message PhaseStats {
+  int32 move_count = 1;
+  int32 total_acpl = 2;
+  double average_acpl = 3;
+  int32 estimated_elo = 4;
+}
+
+// Health check request
+message HealthCheckRequest {
+  string service = 1;
+}
+
+// Health check response
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;
+  }
+  
+  ServingStatus status = 1;
+  string message = 2;
+  int64 timestamp = 3;
+  int32 engine_pool_size = 4;
+}
+
+// Error details for analysis failures
+message AnalysisError {
+  enum ErrorCode {
+    UNKNOWN = 0;
+    INVALID_PGN = 1;
+    GAME_TOO_SHORT = 2;
+    ENGINE_ERROR = 3;
+    TIMEOUT = 4;
+    INVALID_DEPTH = 5;
+  }
+  
+  ErrorCode code = 1;
+  string message = 2;
+  string details = 3;
+}
