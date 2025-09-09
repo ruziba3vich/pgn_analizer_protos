@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pgn_analyzer;
 
-option go_package = "pgn_analyzer";
+option go_package = "genprotos/pgn_analyzer";
 
 // Chess Analysis Service
 service ChessAnalysisService {
