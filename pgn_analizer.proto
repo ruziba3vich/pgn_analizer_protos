@@ -51,6 +51,7 @@ message PhaseStatsByPhase {
   PhaseStats opening = 1;
   PhaseStats middlegame = 2;
   PhaseStats endgame = 3;
+  PhaseStats overall = 4;
 }
 
 // Statistics for a specific phase
