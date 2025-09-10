@@ -33,6 +33,7 @@ message PlayerEloAnalysis {
   int32 opening = 1;
   int32 middlegame = 2;
   int32 endgame = 3;
+  int32 overall = 4;
 }
 
 // Detailed analysis response (for debugging)
